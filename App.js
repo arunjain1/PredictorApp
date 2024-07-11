@@ -1,34 +1,43 @@
 import {
   StyleSheet,
-  View,
+  SafeAreaView,
   ImageBackground,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import GameStartScreen from "./screens/GameStartScreen";
 import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
+import GameScreen from "./screens/GameScreen";
+import Colors from "./constants/colors.js";
 
 export default function App() {
+  const [userNumber,setUserNumber] = useState();
+  
+  function getUserNumber(val){
+    setUserNumber(val);
+  }
+
+  let screen = <GameStartScreen getUserNumber = {getUserNumber} />
+
+  if(userNumber){
+    screen = <GameScreen/>
+  }
+  
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.appContainer}>
         <LinearGradient
-          colors={["#4e0329", "#ddb52f"]}
+          colors={[Colors.primary700,Colors.accent500]}
           style={styles.appContainer}
-        >
+        > 
           <ImageBackground
             source={require("./assets/Images/background.png")}
             resizeMode="cover"
-            style={styles.appContainer}
+            style={[styles.appContainer,styles.imageCont]}
             imageStyle={styles.backImage}
           >
-            <GameStartScreen />
+            <SafeAreaView style={styles.appContainer}>{screen}</SafeAreaView>
+           
           </ImageBackground>
         </LinearGradient>
-      </View>
-    </TouchableWithoutFeedback>
+  
   );
 }
 
