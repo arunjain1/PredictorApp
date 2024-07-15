@@ -10,14 +10,18 @@ import GameScreen from "./screens/GameScreen";
 import GameOverScreen from "./screens/GameOverScreen";
 import Colors from "./constants/colors.js";
 import { useFonts } from "expo-font";
-
+import AppLoading from 'expo-app-loading';
 export default function App() {
   const [userNumber,setUserNumber] = useState();
   const [gameIsOver,setGameIsOver] = useState(false);
-  const [fontLoaded] =  useFonts({
+  const [numberRounds, setNumberRounds] =  useState(0);
+  const [fontsLoaded] =  useFonts({
     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
     'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
   });
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
   function getUserNumber(val){
     setUserNumber(val);
   }
@@ -25,14 +29,20 @@ export default function App() {
     setGameIsOver(true);
   }
 
+  function RestartHandler(){
+    setNumberRounds(0);
+    setUserNumber(null);
+    setGameIsOver(false);
+  }
+
   let screen = <GameStartScreen getUserNumber = {getUserNumber} />
 
   if(userNumber && !gameIsOver){
-    screen = (<GameScreen userNumber={userNumber} GameOver={GameOver}/>)
+    screen = (<GameScreen userNumber={userNumber} GameOver={GameOver} />)
   }
 
   if(userNumber && gameIsOver){
-    screen = <GameOverScreen/>;
+    screen = <GameOverScreen restartGame={RestartHandler} userNumber={userNumber} numberRounds={numberRounds}/>;
   }
   
   return (
