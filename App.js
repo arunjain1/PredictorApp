@@ -9,10 +9,15 @@ import { useState } from "react";
 import GameScreen from "./screens/GameScreen";
 import GameOverScreen from "./screens/GameOverScreen";
 import Colors from "./constants/colors.js";
+import { useFonts } from "expo-font";
 
 export default function App() {
   const [userNumber,setUserNumber] = useState();
   const [gameIsOver,setGameIsOver] = useState(false);
+  const [fontLoaded] =  useFonts({
+    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+  });
   function getUserNumber(val){
     setUserNumber(val);
   }
@@ -22,7 +27,7 @@ export default function App() {
 
   let screen = <GameStartScreen getUserNumber = {getUserNumber} />
 
-  if(userNumber){
+  if(userNumber && !gameIsOver){
     screen = (<GameScreen userNumber={userNumber} GameOver={GameOver}/>)
   }
 

@@ -3,9 +3,15 @@ import { useEffect, useState } from 'react';
 import Title from '../components/Title';
 import NumberContainer from '../components/NumberContainer';
 import PrimaryButton from '../components/PrimaryButton';
+import InstructionText from '../components/InstructionText';
+import Card from '../components/Card';
+import {Ionicons} from "@expo/vector-icons";
+
 
 function RandomNumberGenerator(min,max,exclude){
+  console.log(min,max,exclude)
    const rndNumber = Math.floor(Math.random()*(max-min))+min;
+   console.log(rndNumber);
    if(exclude !== undefined && exclude === rndNumber){
     return RandomNumberGenerator(min,max,exclude);
    }
@@ -16,14 +22,11 @@ let max = 100;
 
 function GameScreen(props) {
   
-  const initialGuess = RandomNumberGenerator(min,max,props.userNumber);
-  const [currentGuess,setCurrentGuess] = useState(initialGuess);
+  const [currentGuess,setCurrentGuess] = useState(()=>RandomNumberGenerator(min,max,props.userNumber));
 
   useEffect(()=>{
-    console.log(props.userNumber,currentGuess);
     if(currentGuess==props.userNumber){
       props.GameOver();
-      console.log("Yo");
     }
   },[currentGuess])
   
@@ -51,18 +54,24 @@ function GameScreen(props) {
     <View style={styles.screen}>
       <Title>Opponent's Guess</Title>
       <NumberContainer>{currentGuess}</NumberContainer>
-      <View>
-        <Text>Higher or lower?</Text>
+      <Card>
+      <InstructionText style={styles.instructionText}>
+          Higher or lower?
+        </InstructionText>
         {/* + - */}
-        <View>
-          <PrimaryButton action={nextGuessHandler.bind(this,"lower")}>
-             Lower
-          </PrimaryButton>
-          <PrimaryButton action={nextGuessHandler.bind(this,"higher")}>
-             Higher
-          </PrimaryButton>
+        <View style={styles.buttonsContainer}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton action={nextGuessHandler.bind(this, 'lower')}>
+              <Ionicons name="remove" size={24} color="white"/>
+            </PrimaryButton>
+          </View>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton action={nextGuessHandler.bind(this, 'higher')}>
+              <Ionicons name="add" size={24} color="white"/>
+            </PrimaryButton>
+          </View>
         </View>
-      </View>
+      </Card>
       {/* <View>LOG ROUNDS</View> */}
     </View>
   );
@@ -74,5 +83,14 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 24
-  }
+  },
+  instructionText: {
+    marginBottom: 12,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+  },
+  buttonContainer: {
+    flex: 1,
+  },
 });
